@@ -33,9 +33,13 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build winpaste x64
-        run: zig build -Doptimize=ReleaseSmall -Dtarget=x86_64-windows install -p x64
+        run: |
+          zig build -Doptimize=ReleaseSmall -Dtarget=x86_64-windows
+          zip -j winpaste-x64.zip zig-out/bin/winpaste.exe
       - name: Build winpaste arm64
-        run: zig build -Doptimize=ReleaseSmall -Dtarget=aarch64-windows install -p arm64
+        run: |
+          zig build -Doptimize=ReleaseSmall -Dtarget=aarch64-windows
+          zip -j winpaste-arm64.zip zig-out/bin/winpaste.exe
 
       - name: release
         uses: actions/create-release@v1
@@ -54,7 +58,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./x64/bin/winpaste.exe
+          asset_path: ./winpaste-x64.zip
           asset_name: winpaste-x64.zip
           asset_content_type: application/zip
           
@@ -64,6 +68,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./arm64/bin/winpaste.exe
+          asset_path: ./winpaste-arm64.zip
           asset_name: winpaste-arm64.zip
           asset_content_type: application/zip
